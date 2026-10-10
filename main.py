@@ -29,9 +29,9 @@ REACTIONS = [
     "ど、どした？笑"
 ]
 
-REPLY_CHANCE = 1.0
+REPLY_CHANCE = 0.45
 
-COOLDOWN_SECONDS = 10
+COOLDOWN_SECONDS = 5
 last_reply_time = {}
 
 
