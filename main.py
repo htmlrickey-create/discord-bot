@@ -31,7 +31,6 @@ REACTIONS = [
 
 REPLY_CHANCE = 0.45
 
-COOLDOWN_SECONDS = 5
 last_reply_time = {}
 
 
@@ -59,9 +58,6 @@ async def on_message(message):
     channel_id = message.channel.id
 
     previous_time = last_reply_time.get(channel_id, 0)
-
-    if now - previous_time < COOLDOWN_SECONDS:
-        return
 
     # 10%の確率で反応
     if random.random() > REPLY_CHANCE:
