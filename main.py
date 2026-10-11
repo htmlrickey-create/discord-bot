@@ -1,9 +1,11 @@
+
 import os
 import random
 import time
 
 import discord
 from dotenv import load_dotenv
+from discord import app_commands
 
 load_dotenv()
 
@@ -14,7 +16,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
-
+tree = app_commands.CommandTree(client)
 
 REACTIONS = [
     "うおｗｗｗｗ",
@@ -33,13 +35,29 @@ REACTIONS = [
 ]
 
 REPLY_CHANCE = 0.50
-
 last_reply_time = {}
 
 
 @client.event
 async def on_ready():
+    await tree.sync()
     print(f"ログイン成功: {client.user}")
+    print("スラッシュコマンドを同期しました")
+
+
+# 冷笑コメント一覧
+@tree.command(
+    name="command",
+    description="冷笑のレパートリーを紹介します"
+)
+async def command(interaction: discord.Interaction):
+    reactions_text = "\n".join(
+        f"・{reaction}" for reaction in REACTIONS
+    )
+
+    await interaction.response.send_message(
+        f"**冷笑のレパートリー一覧**\n{reactions_text}"
+    )
 
 
 @client.event
@@ -56,13 +74,7 @@ async def on_message(message):
     if not message.content.strip():
         return
 
-    # チャンネルごとのクールダウンを確認
-    now = time.monotonic()
-    channel_id = message.channel.id
-
-    previous_time = last_reply_time.get(channel_id, 0)
-
-    # 10%の確率で反応
+    # 50%の確率で反応
     if random.random() > REPLY_CHANCE:
         return
 
@@ -75,7 +87,7 @@ async def on_message(message):
         mention_author=False
     )
 
-    last_reply_time[channel_id] = time.monotonic()
+    last_reply_time[message.channel.id] = time.monotonic()
 
 
 if not TOKEN:
